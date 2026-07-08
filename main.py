@@ -23,8 +23,28 @@ def bubble_sort(arr):
             break
     return arr
 
-array = [random.randint(1,20) for i in range(10)]
-print(bubble_sort(array))
+##array = [random.randint(1,20) for i in range(10)]
+##print(bubble_sort(array))
+
+##selection sort implementation
+def selection_sort(arr):
+    print(f'Starting array: {arr}')
+    n = len(arr)
+    ##outer loop runs n passes to make sure very element gets sorted
+    ##every pass will sort an element to the left hand side. i is the number of elements sorted on the left 
+    for i in range(n):
+        ##set min index = i since thats the checker
+        min_index = i
+        ##inner loops from i+1 to n so it skips over i and the sorted half of the array
+        for j in range(i+1,n):
+            ##condition checking for minindex
+            if arr[j] < arr[min_index]:
+                min_index = j
+        ##swaps the single lowest val from unsorted side onto the ith posiiton to extend sorted section
+        arr[i],arr[min_index] = arr[min_index], arr[i]
+    return arr
+array = [random.randint(1,25) for i in range(10)]
+print(selection_sort(array))
 
 
 
