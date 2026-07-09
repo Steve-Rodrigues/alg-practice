@@ -43,8 +43,23 @@ def selection_sort(arr):
         ##swaps the single lowest val from unsorted side onto the ith posiiton to extend sorted section
         arr[i],arr[min_index] = arr[min_index], arr[i]
     return arr
+##array = [random.randint(1,25) for i in range(10)]
+##print(selection_sort(array))
+
+##Insertion sort implementation
+def insertion_sort(arr):
+    n=len(arr)
+
+    for i in range(1,n):
+        print(f'Sorted portion ends at index {i}\nCurrent array is (sorted):{arr[0:i]}********(unsorted):{arr[i:]}')
+        j=i
+        while (arr[j]<arr[j-1]) and (j>0):
+            arr[j],arr[j-1] = arr[j-1],arr[j]
+            j-=1
+    return arr
 array = [random.randint(1,25) for i in range(10)]
-print(selection_sort(array))
+print(array)
+print(insertion_sort(array))
 
 
 
