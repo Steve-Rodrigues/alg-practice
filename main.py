@@ -58,8 +58,27 @@ def insertion_sort(arr):
             j-=1
     return arr
 array = [random.randint(1,25) for i in range(10)]
-print(array)
-print(insertion_sort(array))
+
+
+##******************************Searching:
+
+##binary search implementation
+def binary_search(arr,target):
+    left = 0
+    right = len(arr-1)
+    while(left<=right):
+        mid = (right+left)//2
+
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            high = mid-1
+        else:
+            low = mid+1
+    return -1
+
+
+
 
 
 
