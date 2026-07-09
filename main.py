@@ -64,18 +64,21 @@ array = [random.randint(1,25) for i in range(10)]
 
 ##binary search implementation
 def binary_search(arr,target):
-    left = 0
-    right = len(arr-1)
-    while(left<=right):
-        mid = (right+left)//2
+    low,high = 0, len(arr)-1
 
+    while(low<=high):
+        mid = (low+high)//2
         if arr[mid] == target:
             return mid
-        elif arr[mid] < target:
+
+        elif target<arr[mid]:
             high = mid-1
         else:
             low = mid+1
     return -1
+
+        
+
 
 
 
