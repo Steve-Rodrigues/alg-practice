@@ -77,6 +77,15 @@ def binary_search(arr,target):
             low = mid+1
     return -1
 
+##factorial recursion example
+def factorial(n):
+    #base case(stopping point for working back up the returns)
+    #this is when the paused functions are released from the call stack
+    if n==1:
+        return 1
+    else:
+        return n*(factorial(n-1))
+print(factorial(4))
         
 
 

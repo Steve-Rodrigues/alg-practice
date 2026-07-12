@@ -40,7 +40,7 @@ def insertion_sort(arr):
 ##Part 2*************************************************
 if __name__ == '__main__':
     array = [random.randint(1,100_000)for i in range(10_000)]
-    ##using copy so its not sorting for linear as well
+    ##using diff list so its not sorting for linear as well
     sorted_arr = sorted(array)
     #these will be in the list
     t1,t2 = [array[random.randint(0,len(array)-1)] for i in range(2)]
@@ -50,19 +50,19 @@ if __name__ == '__main__':
     ##Linear testing
     #t1
     start = time.perf_counter()
-    linear_sorted_1 = linear_search(array,t1)
+    linear_search_1 = linear_search(array,t1)
     end = time.perf_counter()
-    print(f'Took {end-start}s to find element with {t1}, value: {array[linear_sorted_1]}')
+    print(f'Took {end-start}s to find element with {t1}, value: {array[linear_search_1]}')
     #t2
     start = time.perf_counter()
-    linear_sorted_2 = linear_search(array, t2)
+    linear_search_2 = linear_search(array, t2)
     end = time.perf_counter()
-    print(f'Took {end-start}s to find element with {t2}, value: {array[linear_sorted_2]}')
+    print(f'Took {end-start}s to find element with {t2}, value: {array[linear_search_2]}')
     #t3
     start = time.perf_counter()
-    linear_sorted_3 = linear_search(array, t3)
+    linear_search_3 = linear_search(array, t3)
     end = time.perf_counter()
-    print(f'Took {end-start}s to find element with {t3}, value: {linear_sorted_3}')
+    print(f'Took {end-start}s to find element with {t3}, value: {linear_search_3}')
 
     ##binary testing
     #t1
