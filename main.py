@@ -1,4 +1,5 @@
 ##bubble sort implementation
+from math import sqrt
 import random 
 
 def bubble_sort(arr):
@@ -138,11 +139,12 @@ def mergesort(arr):
         return arr
     else:
         #split the array in half--this will happen logn times
-        middle = len(arr) //2
+        middle = len(arr) // 2
         #create the left/right sorted arrs, these will call mergesort to further divide
         #each call will return a merged arr to the variable calling it
         left_sorted = mergesort(arr[:middle])
         right_sorted = mergesort(arr[middle:])
+        print(f'Merging {left_sorted} and {right_sorted}')
 
         #return a single merged array in order from smalles to largest
         return merge(left_sorted, right_sorted)
@@ -160,15 +162,105 @@ def merge(left, right):
             result.append(right[i])
             i+=1
     #if empty dump onto the list since the rest is sorted from prev calls
-    if left:
+    if j<len(left):
         result.extend(left[j:])
     else:
         result.extend(right[i:])
     #return the merged array in sorted order
     return result
 
+##quicksort--dividing
+def quicksort(arr,start,end):
+    if start>=end:
+        return
+    #get the pivot index
+    pivot_ind = partition(arr,start,end)
+    quicksort(arr, start, pivot_ind-1)
+    quicksort(arr,pivot_ind+1, end)
+
+#partition is the actual rearaanging (partitioning) of the quick sort algorithm--works based on the low and high range it was given
+#returns the index of the pivot ending position to make the next splits ranges in start and end--conquering
+def partition(arr, start, end):
+    #setting variables for swapping
+    less_holder = start-1
+    pivot_ind = random.randint(start,end)
+    pivot_element = arr[pivot_ind]
+    #put the pivot as the last element it makes it easier to call on it
+    arr[pivot_ind], arr[end] = arr[end], arr[pivot_ind]
+
+    #loop thru the array and compare to the pivot to make swaps to the less than side.. do not include end because thats the pivot--dont compare against itself obviosly
+    for j in range(start, end):
+        #if less than pivot move holder up to swap it with the found less than element
+        if arr[j] < pivot_element:
+            less_holder+=1
+            arr[less_holder], arr[j] = arr[j], arr[less_holder]
+    #move the pivot to the end of the small side so its in between the small and large side(it is sorted now)
+    arr[less_holder+1],arr[end] = arr[end], arr[less_holder+1]
+    #return the index of the pivot elemenet(one greater than 1 smaller than pivot)
+    return less_holder+1
+
+##brute force attempt of finding closest pair of points
+def distance(p1,p2):
+    return sqrt((p2[1]-p1[1])**2 + (p2[0]-p1[0])**2)
+def bruteClosesPoints(arr):
+    minDist = float('inf')
+    #compare each element to every element after it
+    for i in range(len(arr)):
+        for j in range(i+1, len(arr)):
+            currDist = distance(arr[i],arr[j])
+            if currDist < minDist:
+                minDist = currDist
+    return minDist
+
+##each recursive split gets checked in here to return the true lowest distance
+#It takes in the arr,l,r,splitpoint. then checks points in the middle in the range of the smallest distance of l and r
+#checks the y values now
+def splitCheck(splitPoint, leftD, rightD, arr):
+    #updates the distance to smaller value
+    minDist = min(leftD,rightD)
+    leftHalf = arr[:splitPoint]
+    rightHalf = arr[splitPoint:]
+    #grab only the points in the minDist range
+    filteredRight = list(filter(lambda point: point if (point[0]-arr[splitPoint][0]) < minDist else None, rightHalf))
+    filteredLeft = list(filter(lambda point: point if (arr[splitPoint][0]-point[0]) < minDist else None, leftHalf))
+    combined = filteredRight + filteredLeft
+    #sort by y values
+    ySorted = sorted(combined, key=lambda point: point[1])
+    #use brute force distance alg for the left over on y
+    for i in range(len(ySorted)):
+        for j in range(i+1, len(ySorted)):
+            currDist = distance(ySorted[i],ySorted[j])
+            if currDist < minDist:
+                minDist = currDist
+    return minDist
+
+##recursive algorithm for finding min distance between points
+#recursive function--splits given array in half and finds min-distance between points in that half. Then compares each half along the split using the y-axis
+def minDistance(arr:list):
+    #base case: only 3 max points in arr, just use brute force because basically constant time now
+    if len(arr) <= 3:
+        return bruteClosesPoints(arr)
+    #recursive calls- splits in half and returns the minDistance of the total at this point
+    else:
+        #sort the array by the x points so we can create the split at median x point
+        sortedX = sorted(arr, key=lambda point: point[0])
+        midIndex = len(sortedX)//2
+        lHalf,rHalf = sortedX[:midIndex], sortedX[midIndex:]
+        leftDist = minDistance(lHalf)
+        rightDist = minDistance(rHalf)
+
+        return splitCheck(midIndex, leftDist, rightDist, sortedX)
+
+points = [(random.randint(1,50),random.randint(1,20)) for i in range(1000)]
+print(minDistance(points))
+
+        
+
+
 
     
+
+
     
 
 
