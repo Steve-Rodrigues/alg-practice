@@ -199,65 +199,58 @@ def partition(arr, start, end):
     #return the index of the pivot elemenet(one greater than 1 smaller than pivot)
     return less_holder+1
 
-##brute force attempt of finding closest pair of points
+#brute force alg for min distance between two points in an field of points
 def distance(p1,p2):
     return sqrt((p2[1]-p1[1])**2 + (p2[0]-p1[0])**2)
-def bruteClosesPoints(arr):
-    minDist = float('inf')
-    #compare each element to every element after it
+def minDistanceBrute(arr):
+    d = float('inf')
     for i in range(len(arr)):
         for j in range(i+1, len(arr)):
-            currDist = distance(arr[i],arr[j])
-            if currDist < minDist:
-                minDist = currDist
-    return minDist
+            currDistance = distance(arr[i],arr[j])
+            if currDistance < d:
+                d = currDistance
+    return d
 
-##each recursive split gets checked in here to return the true lowest distance
-#It takes in the arr,l,r,splitpoint. then checks points in the middle in the range of the smallest distance of l and r
-#checks the y values now
-def splitCheck(splitPoint, leftD, rightD, arr):
-    #updates the distance to smaller value
-    minDist = min(leftD,rightD)
-    leftHalf = arr[:splitPoint]
-    rightHalf = arr[splitPoint:]
-    #grab only the points in the minDist range
-    filteredRight = list(filter(lambda point: point if (point[0]-arr[splitPoint][0]) < minDist else None, rightHalf))
-    filteredLeft = list(filter(lambda point: point if (arr[splitPoint][0]-point[0]) < minDist else None, leftHalf))
-    combined = filteredRight + filteredLeft
-    #sort by y values
-    ySorted = sorted(combined, key=lambda point: point[1])
-    #use brute force distance alg for the left over on y
-    for i in range(len(ySorted)):
-        for j in range(i+1, len(ySorted)):
-            currDist = distance(ySorted[i],ySorted[j])
-            if currDist < minDist:
-                minDist = currDist
-    return minDist
-
-##recursive algorithm for finding min distance between points
-#recursive function--splits given array in half and finds min-distance between points in that half. Then compares each half along the split using the y-axis
-def minDistance(arr:list):
-    #base case: only 3 max points in arr, just use brute force because basically constant time now
+##recurisve O(nlogn) efficient min distance between points algorithm
+def closestPoints(arr):
+    #base case is when there are 3 or less points, can afford to use brute force to return distance
     if len(arr) <= 3:
-        return bruteClosesPoints(arr)
-    #recursive calls- splits in half and returns the minDistance of the total at this point
+        return minDistanceBrute(arr)
     else:
-        #sort the array by the x points so we can create the split at median x point
-        sortedX = sorted(arr, key=lambda point: point[0])
-        midIndex = len(sortedX)//2
-        lHalf,rHalf = sortedX[:midIndex], sortedX[midIndex:]
-        leftDist = minDistance(lHalf)
-        rightDist = minDistance(rHalf)
+        #sort it by x to divide in half and split by x axis
+        xSorted = sorted(arr, key=lambda point: point[0])
+        #divide list into halves using mid point
+        left = xSorted[:(len(xSorted)//2)]
+        right = xSorted[(len(xSorted)//2):]
+        #recursivly call function to eventually get base case and work up result tree
+        dLeft = closestPoints(left)
+        dRight = closestPoints(right)
+        #get the min distance value from the two halves after result tree worked up
+        d = min(dLeft, dRight)
 
-        return splitCheck(midIndex, leftDist, rightDist, sortedX)
+        #now we narrow down to the points within min-distance range to the middle point
+        leftFinalPoints = list(filter(lambda point: point if (xSorted[(len(xSorted)//2)]-point)<d else None, left))
+        rightFinalPoints = list(filter(lambda point: point if (point-xSorted[(len(xSorted)//2)])<d else None, right))
+        #check those points on the line for the y-axix closeness
+        ySorted = sorted((leftFinalPoints+rightFinalPoints), key=lambda point: point[1])
+        #brute force on smaller y sorted array to finalize the distance variable
+        for i in range(len(ySorted)):
+            for j in range(i+1, len(ySorted)):
+                currDistance = distance(ySorted[i], ySorted[j])
+                if currDistance < d:
+                    d = currDistance
+        #return the finalized minimum distance between the points in the given array
+        return d
 
-points = [(random.randint(1,50),random.randint(1,20)) for i in range(1000)]
-print(minDistance(points))
+#testing poewr function non rec and rec
+def powerRec(base, power):
+    #base case, starts the return tree
+    if power==1:
+        return base
+    else:
+        return base(powerRec(base,(power-1)))
 
-        
-
-
-
+print(powerRec(3,3))
     
 
 
