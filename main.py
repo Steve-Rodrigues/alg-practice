@@ -242,19 +242,29 @@ def closestPoints(arr):
         #return the finalized minimum distance between the points in the given array
         return d
 
-#testing poewr function non rec and rec
-def powerRec(base, power):
-    #base case, starts the return tree
-    if power==1:
-        return base
-    else:
-        return base(powerRec(base,(power-1)))
+##Matrix multiplication-- we have A*B: each element in every row of A gets multiplied by each element in every column of B
+#So the shape will be rows(a) * cols(b) because rowA runs entirely for every column in B
+#number of cols in A must match num of rows in B because each row is going to go thru each element in that row(column) so it needs to go thru each element(row) in colB
+def matrixMult(matrixA, matrixB):
+    #gets the shape of result ready for rowsA x colsB, 1 val for every colB and a row for every rowA
+    result = [[0 for col in range(len(matrixB[0]))] for row in range(len(matrixA))]
 
-print(powerRec(3,3))
-    
-
-
-    
-
-
+    #Go through each row in A
+    for i in range(len(matrixA)):
+        #go through each column in B at the current row of A
+        for j in range(len(matrixB[0])):
+            #add dot product result to element at current row and current column
+            #each element at matrixA row is multiplied by each element in matrixB column
+            #loop as long as the number of rows in B are since grabbing one element at each row of current column
+            for k in range(len(matrixB)):
+                result[i][j] += matrixA[i][k]*matrixB[j][k]
+    return result
+#3x2 matrix--rresult must have 3 rows since each row goes through each column in B
+a = [[5,10],
+     [6,9],
+     [5,0]]
+#2x2 matrix--result must have 2 cols in each row
+b=[[3,4],
+   [5,6]]
+print(matrixMult(a,b))
 
