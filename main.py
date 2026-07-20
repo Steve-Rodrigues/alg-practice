@@ -169,35 +169,37 @@ def merge(left, right):
     #return the merged array in sorted order
     return result
 
-##quicksort--dividing
-def quicksort(arr,start,end):
+##quicksort alg-- choose random pivot and set to end element each recursive call. loop from start to end and each time we find an element less than pivot
+#we swap it to the current less than holder and then at the end we swap pivot with curr less than holder and it is sorted. Then call recurisve on each side of the same list
+def quicksort(arr, start=0, end=None):
+    if end is None:
+        end = len(arr)-1
+    ##base case is when start greater than or equal to end. means we are at only 1 element or 0 elements left(greater than)
     if start>=end:
         return
-    #get the pivot index
-    pivot_ind = partition(arr,start,end)
-    quicksort(arr, start, pivot_ind-1)
-    quicksort(arr,pivot_ind+1, end)
+    else:
+        #get random element as pivot so its not biased
+        pivot_idx = random.randint(start, end)
+        pivot_element = arr[pivot_idx]
+        arr[pivot_idx],arr[end] = arr[end],arr[pivot_idx]
+        #less than pointer is for current holder for when we find the less than element or the spot to place pivot in the end
+        less_than_holder = start
+        #loop through array and swap small val with less_than_holder to create the less than and greater than side
+        for i in range(start, end):
+            if arr[i] < pivot_element:
+                arr[less_than_holder],arr[i] = arr[i],arr[less_than_holder]
+                less_than_holder+=1
+        #after finished adding to less than side put pivot at less than holder(sorted because 1 greater than all smaller and 1 less than all bigger)
+        arr[end],arr[less_than_holder] = arr[less_than_holder], arr[end]
+        ##now recursivley call on the less than and greater than side of same list with updated pointers
+        #less than
+        quicksort(arr, start=start, end=less_than_holder-1)
+        #greater than
+        quicksort(arr, start= less_than_holder+1, end= end)
+arr=[1,6,5,4,8,7,9,10,23,1,0,9]
+quicksort(arr)
+print(arr)
 
-#partition is the actual rearaanging (partitioning) of the quick sort algorithm--works based on the low and high range it was given
-#returns the index of the pivot ending position to make the next splits ranges in start and end--conquering
-def partition(arr, start, end):
-    #setting variables for swapping
-    less_holder = start-1
-    pivot_ind = random.randint(start,end)
-    pivot_element = arr[pivot_ind]
-    #put the pivot as the last element it makes it easier to call on it
-    arr[pivot_ind], arr[end] = arr[end], arr[pivot_ind]
-
-    #loop thru the array and compare to the pivot to make swaps to the less than side.. do not include end because thats the pivot--dont compare against itself obviosly
-    for j in range(start, end):
-        #if less than pivot move holder up to swap it with the found less than element
-        if arr[j] < pivot_element:
-            less_holder+=1
-            arr[less_holder], arr[j] = arr[j], arr[less_holder]
-    #move the pivot to the end of the small side so its in between the small and large side(it is sorted now)
-    arr[less_holder+1],arr[end] = arr[end], arr[less_holder+1]
-    #return the index of the pivot elemenet(one greater than 1 smaller than pivot)
-    return less_holder+1
 
 #brute force alg for min distance between two points in an field of points
 def distance(p1,p2):
@@ -281,4 +283,3 @@ def power_recursive(b, e):
       return 1/(b*power_recursive(b,abs(e)-1))
     else:
       return b*power_recursive(b,e-1)
-print(power_recursive(2,-3))
