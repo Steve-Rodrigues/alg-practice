@@ -266,5 +266,19 @@ a = [[5,10],
 #2x2 matrix--result must have 2 cols in each row
 b=[[3,4],
    [5,6]]
-print(matrixMult(a,b))
+##a*b would return 3x2 matrix because 3 rows in A each go through 2 cols in B returning 1 value for each column in each row
 
+def power_recursive(b, e):
+    # Base case
+    if (b==0) and (e<0):
+      raise ValueError('division by 0 is undefined')
+    if b==0:
+      return 0
+    if e==0:
+      return 1
+    # Recursive case
+    elif e<0:
+      return 1/(b*power_recursive(b,abs(e)-1))
+    else:
+      return b*power_recursive(b,e-1)
+print(power_recursive(2,-3))
