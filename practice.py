@@ -36,3 +36,25 @@ def median_salary(salaries: list[int]) -> float:
 print(median_salary([50000, 60000, 40000, 70000, 55000]))
 
 
+# 2. Top k earners. Same company, but now they want a list of the k highest-paid
+# employees, in any order (not necessarily sorted among themselves). Can you avoid
+# fully sorting the array? What does your solution look like when k is very small
+# compared to n vs. when k is close to n?
+def top_k_earners(salaries: list[int], k: int) -> list[int]:
+    pass
+
+
+# 3. Pass/fail split. A teacher has an unsorted list of exam scores and a passing
+# threshold (say, 60). Rearrange the array in place, in one pass, so all passing scores
+# come before all failing scores -- no extra array. (This is literally a two-way
+# partition step, just with an external threshold instead of a pivot drawn from the data.)
+def pass_fail_split(scores: list[int], threshold: int = 60) -> list[int]:
+    pass
+
+
+# 4. Sorting paint cans. You have cans of paint labeled only red, white, or blue,
+# arranged randomly on a shelf. Rearrange them in one pass, O(1) extra space, so all
+# reds come first, then whites, then blues. (Dutch national flag -- a 3-way
+# generalization of partitioning.)
+def sort_paint_cans(cans: list[str]) -> list[str]:
+    pass
