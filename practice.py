@@ -33,15 +33,50 @@ def median_salary(salaries: list[int]) -> float:
     return quickselect(salaries, 0, len(salaries)-1)
 
 
-print(median_salary([50000, 60000, 40000, 70000, 55000]))
-
 
 # 2. Top k earners. Same company, but now they want a list of the k highest-paid
 # employees, in any order (not necessarily sorted among themselves). Can you avoid
 # fully sorting the array? What does your solution look like when k is very small
 # compared to n vs. when k is close to n?
+##implementing a quickselect: we need to sort until the pivot that we sorted is at the kth index becasue all elements after it are bigger by definition
+#doesnt mean they are sorted just bigger becasue thats what pivot partitioning does
+
 def top_k_earners(salaries: list[int], k: int) -> list[int]:
-    pass
+    def quickselect(salaries, start=0, end=None):
+        if end is None:
+            end = len(salaries)-1
+        if len(salaries)<=1:
+            return
+        else:
+            #set up the pivot by choosing random index and then moving to the end
+            pivot_idx = randint(start, end)
+            pivot_element = salaries[pivot_idx]
+            salaries[pivot_idx], salaries[end] = salaries[end], salaries[pivot_idx]
+
+            #set the less than holder to start swap the values into lt side and then put the pivot in the sorted position
+            less_than_holder = start
+            for i in range(start, end):
+                if salaries[i] < pivot_element:
+                    salaries[less_than_holder], salaries[i] = salaries[i],salaries[less_than_holder]
+                    less_than_holder+=1
+            #move the pivot element to the less than holder to correctly sort it-- means all elements in front are bigger
+            salaries[end], salaries[less_than_holder] = salaries[less_than_holder], salaries[end]
+            #check to see if the pivot element stored at the less than pointer is equal to k, if so return pivot and the rest
+            if k == less_than_holder:
+                return salaries[less_than_holder:]
+            else:
+                #if k is smaller than that pivot element than move the next call to below the current pivot
+                if k < less_than_holder:
+                    return quickselect(salaries, start, end=less_than_holder-1)
+                else:
+                    return quickselect(salaries, start=less_than_holder+1, end=end)
+    return quickselect(salaries, start=0, end=None)
+
+
+
+
+
+    
 
 
 # 3. Pass/fail split. A teacher has an unsorted list of exam scores and a passing
