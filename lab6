@@ -1,0 +1,110 @@
+from collections import defaultdict, deque
+import heapq
+
+
+class Graph():
+    def __init__(self):
+        self.adjacency_list = defaultdict(list)
+        #passin in list of vertices to be used as keys in the adjaceceny list with defaultdict 
+    def initialize_graph(self, vertex_list):
+        for vertex in vertex_list:
+            self.adjacency_list[vertex]
+    #add edges: one directional and weighted relationship so only vertex 1 gets edge connection to vertex 2, and each has cost
+    #edges to be displayed in format of vertex : (weight,vertex)
+    def add_edge(self, v1, v2, w):
+        self.adjacency_list[v1].append((w,v2))
+    def display_graph(self):
+        for vertex in self.adjacency_list.keys():
+            print(f'{vertex}: ', end='')
+            for edge in self.adjacency_list[vertex]:
+                print(f'{edge} ', end='')
+            print()
+
+    def __repr__(self):
+        return str(dict(self.adjacency_list))
+    #bfs: works from level to level by grabbing all of the edges for each node in that edge level, so it views nodes in every direction
+    #uses queue to go by level so the first levels are explore first and so on
+    def bfs(self, start):
+        visited = {start}
+        queue = deque([start])
+        #record the path that we explored by
+        path = []
+
+        while queue:
+            #get every possible direction we can go from current node(explore this node and visiting those nodes)
+            #ignore the weight for this example since bfs only focuses on direction
+            current_vertex = queue.popleft()
+            path.append(current_vertex)
+            print(path)
+            for weight,neighbor in self.adjacency_list[current_vertex]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    queue.append(neighbor)
+        return path
+    #dfs: works using stack because it goes down a choice of edges each time until hitting a dead end
+    #it works back up to the node that still has unvisited neighbors and tries another route
+    #runs until every node up to start has no untried paths of traversal
+    def dfs(self, start):
+        stack = [start]
+        visited = {start}
+
+        while stack:
+            current_vertex = stack[-1]
+            print(stack)
+            #again ignore weight, does not matter in dfs
+            for weight, neighbor in self.adjacency_list[current_vertex]:
+                if neighbor not in visited:
+                    visited.add(neighbor)
+                    stack.append(neighbor)
+                    break
+            #if no unvisited neighbors or dead end pop that node off and try from previous node
+            #also remove from the path list because that is not part of the path anymore
+            else:
+                stack.pop()
+        return stack
+    #dijkstra's shortest path: constantly comparing if the current value to a certain node added to the edge weight of an edge node is less than that nodes value to that point
+    #if it is true, then that is the new shortes path to that node and the value will be updated and pushed to the heap
+    #use heap so the min weights are prioritzed and we compare those first to see if any shorteer paths to neighbors found
+    def dijkstra(self, start):
+        #starting values-- non starter node is set at infinity so first comparisons of cost is less than automatically and sets it
+        distances = {vertex: (float('inf') if vertex != start else 0) for vertex in self.adjacency_list.keys()}
+        min_heap = [(0,start)]
+
+        #while we are still finding smaller than marked distances
+        while min_heap:
+            #pop current smallest distanct to compare to its neighbors
+            curr_weight, curr_vertex = heapq.heappop(min_heap)
+            #if the current weight is bigger than the weight in the dict for that value skip it
+            #because we already found a better value
+            if curr_weight > distances[curr_vertex]: continue
+            #check if the step onto the neighbor happens with smaller cost than a previous step to that neighbor
+            #if so, update the dict and that is the new path to that edge node because it is the shortest and add to the heap
+            for n_weight, n_vertex in self.adjacency_list[curr_vertex]:
+                if curr_weight + n_weight < distances[n_vertex]:
+                    distances[n_vertex] = curr_weight + n_weight
+                    heapq.heappush(min_heap, (n_weight+curr_weight, n_vertex))
+        return distances
+
+
+                
+
+    
+        
+if __name__ == '__main__':
+    g = Graph()
+    g.initialize_graph(['A','B','C','D','E','F'])
+    g.add_edge('A','B',4)
+    g.add_edge('A','C',2)
+    g.add_edge('B','C',5)
+    g.add_edge('B','D',10)
+    g.add_edge('C','E',3)
+    g.add_edge('E','D',4)
+    g.add_edge('D','F',11)
+    print(g.dijkstra('A'))
+    
+    
+
+
+    
+
+
