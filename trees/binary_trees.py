@@ -58,10 +58,6 @@ class TreeNode():
             print(currNode)
     
 
-        
-
-
-
 A = TreeNode(1)
 B = TreeNode(2)
 C = TreeNode(3)
@@ -77,6 +73,7 @@ C.left = F
 A.preorder_dfs(A)
 A.postorder_dfs(A)
 A.bfs(A)
+
 
     
 
