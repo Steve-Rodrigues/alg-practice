@@ -6,6 +6,10 @@
 #find will check where each node is pointed to and if already poiinted to the same node, they are connected
 #union will point to a common node
 #so the data structure allows us to union two graphs into the same graph which is now connected but conaining no cycles
+from collections import defaultdict
+import heapq
+
+
 class DisjointSet:
     #each node will have a parent pointer to check set memebership and a value, also neighbor value to attach to another node
     def __init__(self, parent, val):
@@ -97,6 +101,56 @@ class Graph:
         for weight, vertex1, vertex2 in tree_final:
             print(f'{vertex1} <--> {vertex2}: Weight of {weight}')
         return tree_final
+
+    #going to need the frequenecy map function to perform the searching with prims beause needs access to its edges since it is doing bfs liek search
+    def adjacencyList(self, graph):
+        adjacency_list = defaultdict(list)
+        for w,v1,v2 in graph:
+            adjacency_list[v1].append((w,v2,v1))
+            adjacency_list[v2].append((w,v1,v2))#the third is the parent for actually adding the pointer in the array tree structure
+        return adjacency_list
+
+##Now going to implememnt Prims algorithm: Another Miniumum Spanning Tree algorithm
+#this time we are going to choose any starting edge and then to check cycles we use a visited set instead of the union find because of how we add to the tree
+#this time we add to the tree by creating a minheap and it will choose the smallest available node from all the endpoint edges that have not been visited yet
+#this does not use union find because it is a growing tree rather than a bunch of floating fragments which is where union find shines because it shows where each fragment points to
+    def prims(self):
+        mst = [i for i in range(self.vertices)] #going to be the tree structure where each index is pointing to the next node(index), the values are where they point to
+        visited = set() #visited set to make sure we dont go to an edge that is already in the membership set so there are no cycles
+        graph = self.graph
+        #adding the adjacency list since we are adding all of the edges to the minHeap each time sorted by the weight so its first
+        adjList = self.adjacencyList(graph)
+
+        minHeap = []#going to use minheap to store the minimum weight edge from the available edges from each node we have visited(kind of like bfs because checking all edges)
+        #minheap is going to store all of the available edges from lowest weight to highest from the bfs-like-search and we choose smallest one based on weight
+        for n in adjList[graph[0][1]]:
+            minHeap.append(n)
+
+        heapq.heapify(minHeap)#starts with the neighbors of the first vertex in edge list and chooses smallest from there
+        #will run until the visited set is equal to the number of verticies because that means all of them are connected since only marked after added to the tree
+        #initialize the mst with the first value
+        mst[graph[0][1]] = (0, graph[0][1], graph[0][1])#sets starting vertex in the mst to have weight of 0 and pointing to iteself becasue it is the start
+        visited.add(graph[0][1])#starting at the first edge in the graph array(does not matter tho)
+
+        while len(visited) < self.vertices:
+            #pop lowest edge weight from the heap and use that 
+            currSmallest = heapq.heappop(minHeap)#remember that the vertex we are looking at is at index 1 becasue this include the weight, vertex, and parent
+            if currSmallest[1] not in visited:
+                visited.add(currSmallest[1])
+                #at the current smallest node found we add to visited and to the tree strucutre and then add all of its neighbors as long as not already visited so no cycles
+                mst[currSmallest[1]] = currSmallest#setting that index in the tree to point to its parent value which is the 3rd value in teh tuple(it is the dictionary key)
+                #add its edge connections to the heap so they can be checked next time to compared to the other available
+                for connection in adjList[currSmallest[1]]:
+                    heapq.heappush(minHeap, connection)
+        for w, v, parent in mst:
+            print(f'{v} <--> {parent}: Weight of {w}')
+        print(f'Total weight: {sum(edge[0] for edge in mst)}')
+        return
+
+
+        
+
+
 if __name__ == '__main__':
     # 5-vertex graph, known-good MST:
     #   0-1(2) 0-3(6) 1-2(3) 1-3(8) 1-4(5) 2-4(7) 3-4(9)
@@ -117,6 +171,8 @@ if __name__ == '__main__':
     # to the same root, since the graph is fully connected
 
     print(res_tree)
+
+    g.prims()
     
 
 
