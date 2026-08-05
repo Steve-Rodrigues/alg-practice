@@ -1,0 +1,39 @@
+from collections import deque
+
+#will be implementing bfs on a graph when it is in grid form, so the "nodes" are the elements at each index of the grid
+#not much differetn other than how you start searching each node, you need to loop through every position and at each position you check
+#if it is already in the visited and if not we can search it and then for a 4-directional bfs we just check to the right,left,up,down
+#the obvious constraints are when it is out of bounds, so less than 0-index or greater than length of rows or len of cols
+
+#this is the bfs helper function to call at each node--for this practice we are doing to the number of islands problem
+def bfs(grid, visited, node):
+    queue = deque([node])
+    while queue:
+        r,c = queue.popleft()
+        visited.add((r,c))
+        #will be going left,right,up,down
+        if 0<=c-1<len(grid[0]) and grid[r][c-1] == "0" and (r,c-1) not in visited:
+            visited.add((r,c-1))
+            queue.append((r,c-1))
+        if 0<=c+1<len(grid[0]) and grid[r][c+1] == "0" and (r,c+1) not in visited:
+            visited.add((r,c+1))
+            queue.append((r,c+1))
+        if 0<=r-1<len(grid) and grid[r-1][c] == "0" and (r-1,c) not in visited:
+            queue.append((r-1,c))
+            visited.add((r-1,c))
+        if 0<=r+1<len(grid) and grid[r+1][c] == "0" and (r+1,c) not in visited:
+            queue.append((r+1,c))
+            visited.add((r+1,c))
+    return
+#now the main function to go through all of the positions(nodes) and count the islands
+def count(grid):
+    visited = set()
+    count=0
+
+    for r in range(len(grid)):
+        for c in range(len(grid[0])):
+            if (r,c) not in visited and grid[r][c] == "0":
+                count+=1
+                bfs(grid, visited, (r,c))
+    return count
+
