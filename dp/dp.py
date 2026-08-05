@@ -36,6 +36,10 @@ def memFib(n, cache=None):
 #now going to use tabulation(safer approach due to no call stack since we are using previous values every sinlge time)
 #we solve the small subproblems from bottom up and use that to solve the next ones. This also ONLY runs n times because we just need the loop to run 
 def tabFib(n):
+    if n==0:
+        return 0
+    if n==1:
+        return 1
     dp_table = [-1 for i in range(n)]
     #base cases are filled right away becasue its one call and works bottom up
     dp_table[0] = 0
