@@ -43,6 +43,46 @@ def tabClimbStairs(n):
     return dpMem[n]
 print(tabClimbStairs(5))
 
+##minimum cost to reach the top of the stairs
+#have array of cost and the cost to get to the current step of the array is the cost of the previous 2 added to the cost of just landing at the step
+#we can either jump 2 or 1 step and the frist 2 steps are free to get to so their cost is just the cost of them in the cost array, nothing added to them
+#idea is we need the previous 2 steps mincost to get the current step minimum cost because it will be the answer of the current step cost of landing added to the smaller of the previous 2
+#this is why it is a dp because it used overlapping probs with previous solutions
+def minCost(cost:list) -> int:
+        minCost = [0 for i in range(len(cost)+1)]#the plus 1 is for the top floor
+        minCost[0] = cost[0]
+        minCost[1] = cost[1]
+        for i in range(2, len(minCost)):
+            if i == len(minCost)-1:
+                minCost[i] = min([minCost[i-1],minCost[i-2]])
+            else:
+                minCost[i] = cost[i] + min([minCost[i-1],minCost[i-2]])
+        return minCost[-1]
+
+#canSum problem: take in array of numbers and a targetSum and we want to know if we can add up to this sum using any number in the array
+#they can be repeated, if so return true. Adding up is true if we can subtract down from the target using values in the array to end up getting 0
+#so we recursively subtract down using each element in the array per call and if any of those paths reutrn t it is t
+#the base cases are if result is 0 return t and if negative return f
+#will then use dp memoization to improve efficiency
+def canSum(target, nums,memo={}):
+    #if have alr seen that subproblem return its result
+    if target in memo:
+        return memo[target]
+    if target==0:
+        return True
+    if target<0:
+        return False
+    for num in nums:
+        subProb = target-num
+        memo[subProb] = canSum(subProb, nums,memo)
+        if memo[subProb]:
+            return True
+    #dont return false until we have tried everhy single possibility because we only need one true
+    return False
+ 
+
+    
+print(canSum(300,[2,3,4,10,19]))
 
 
 

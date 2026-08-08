@@ -1,0 +1,34 @@
+import heapq
+class Activity:
+    def __init__(self, start, end, name):
+        self.start = start
+        self.end = end
+        self.name = name
+
+    def acivity_selection(self, activities: list) -> list:
+        final = []
+        heapq.heapify(activities)#make a min heap so it sorts in O(n) time using the end time
+        #now loop through all the activities in the heap until its empty and add to the final array as lone as not overlapping, using the start and end times
+        last_end = float('-inf')
+        while activities:
+            end,start,name = heapq.heappop(activities)
+            if start >= last_end:
+                last_end = end
+                final.append((name, start, end))
+        return final
+
+if __name__ == '__main__':
+    first = Activity(1,4,'A1')
+    second = Activity(3,5,'A2')
+    third = Activity(0,6,'A3')
+    fourth = Activity(5,7,'A4')
+    fifth = Activity(3,9,'A5')
+    sixth = Activity(5,9,'A6')
+    seventh = Activity(6,10,'A7')
+    eigth = Activity(8,11,'A8')
+    a = [(act.end,act.start, act.name) for act in
+         [first, second, third, fourth, fifth, sixth, seventh, eigth]]
+    print(heapq.heapify(a))
+
+    print(a)
+    print(first.acivity_selection(a))
